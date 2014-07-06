@@ -36,7 +36,6 @@ static YelpFilters *sharedFilter = nil;
     return [self.filters[section][@"options"][row][@"selected"] boolValue];
 }
 
-
 + (YelpFilters *)getOrInitFilters {
     if (sharedFilter == nil) {
         sharedFilter = [[super allocWithZone:NULL] init];

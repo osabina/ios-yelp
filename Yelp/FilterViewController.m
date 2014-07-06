@@ -179,7 +179,7 @@
 
 
 -(void)pushSearchButton {
-    // stub
+    [self.delegate addFilters:self didFinishEnteringFilters:self.yf];
 }
 
 -(void)pushCancelButton {

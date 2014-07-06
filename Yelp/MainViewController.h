@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "FilterViewController.h"
 
-@interface MainViewController : UIViewController <UITableViewDataSource,UITableViewDelegate>
+@interface MainViewController : UIViewController <UITableViewDataSource,UITableViewDelegate,FilterViewControllerDelegate>
+- (void)addFilters:(FilterViewController *)controller didFinishEnteringFilters:(YelpFilters *)filters;
 
 @end

@@ -3,7 +3,6 @@ ios-yelp
 
 Yelp app for iOS class (assignment 3)
 
-
 **Completed User Stories**
 
 - Search results page
@@ -36,9 +35,9 @@ Coming soon.
 
 **Notes**
 
-This took me about 10 hours to get to this point.
+This took me about 15 hours to get to this point.
 
-"Cancel" button just returns to search page, but filter choices remain.  In an ideal world changes made during that View would be tossed on cancel.
+"Cancel" button just returns to search page, but filter choices remain (although they are not searched on).  In an ideal world changes made during that View would be tossed on cancel.
 
 **Credits**
 

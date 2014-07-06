@@ -2,8 +2,8 @@
 //  MainViewController.m
 //  Yelp
 //
-//  Created by Timothy Lee on 3/21/14.
-//  Copyright (c) 2014 codepath. All rights reserved.
+//  Created by Ozzie Sabina
+//  Copyright (c) 2014.  All rights reserved.
 //
 
 #import "UIImageView+AFNetworking.h"
@@ -15,6 +15,8 @@
 #import "FilterViewController.h"
 #import "YelpCell.h"
 
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
+
 NSString * const kYelpConsumerKey = @"mbCYBWrsj76OXlzToGAMpw";
 NSString * const kYelpConsumerSecret = @"UPnEFT3TCwHsDCF1MmcYOwQcE5Y";
 NSString * const kYelpToken = @"3ua_uCQNU_97n2Z6NVNYm3p8uwract_A";
@@ -22,12 +24,18 @@ NSString * const kYelpTokenSecret = @"zgeQURodtyrv7YzcKplgT5X-Yaw";
 
 @interface MainViewController ()
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (nonatomic, strong) YelpClient *client;
 
 @property (strong, nonatomic) NSArray *businesses;
+@property (strong, nonatomic) NSString *search_term;
+@property (strong, nonatomic) YelpFilters *filters;
 
 -(void)loadData;
 -(void)pushFilterButton;
+
+- (IBAction)editDidEnd:(id)sender;
+- (IBAction)onViewTap:(id)sender;
 
 @end
 
@@ -39,7 +47,9 @@ NSString * const kYelpTokenSecret = @"zgeQURodtyrv7YzcKplgT5X-Yaw";
     if (self) {
         // You can register for Yelp API keys here: http://www.yelp.com/developers/manage_api_keys
         self.client = [[YelpClient alloc] initWithConsumerKey:kYelpConsumerKey consumerSecret:kYelpConsumerSecret accessToken:kYelpToken accessSecret:kYelpTokenSecret];
-        [self loadData];
+        self.filters = nil;
+        self.search_term = @"Food";
+        //        [self loadData];
     }
     return self;
 }
@@ -56,10 +66,13 @@ NSString * const kYelpTokenSecret = @"zgeQURodtyrv7YzcKplgT5X-Yaw";
     // static, for now
     self.tableView.rowHeight = 110;
     
-    UISearchBar *searchBar = [[UISearchBar alloc]
-                              initWithFrame:CGRectMake(0, 0, 200, 30)];
+//    UISearchBar *searchBar = [[UISearchBar alloc]
+  //                            initWithFrame:CGRectMake(0, 0, 200, 30)];
+    //    searchBar.delegate = self;
 
-    // stub
+    //UIView *searchBarView = [[UIView alloc] initWithFrame:[searchBar bounds]];
+    //[searchBarView addSubview:searchBar];
+    
     id barButtonAppearance = [UIBarButtonItem appearance];
     NSMutableDictionary *barButtonTextAttributes = [NSMutableDictionary dictionaryWithCapacity:1];
     [barButtonTextAttributes setObject:[UIFont fontWithName:@"HelveticaNeue" size:14.0f] forKey:NSFontAttributeName];
@@ -86,9 +99,19 @@ NSString * const kYelpTokenSecret = @"zgeQURodtyrv7YzcKplgT5X-Yaw";
                             action:@selector(pushFilterButton)];
     
     
-    self.navigationItem.titleView = searchBar;
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(1.0, 0.0, 280.0, 44.0)];
+    self.searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    self.searchBar.barTintColor= UIColorFromRGB(0xb23512);
+    
+    UIView *searchBarView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 300.0, 44.0)];
+    searchBarView.autoresizingMask = 0;
+    self.searchBar.delegate = (id) self;
+    [searchBarView addSubview:self.searchBar];
+    self.navigationItem.titleView = searchBarView;
+    
     self.navigationItem.leftBarButtonItem = filterButton;
-    [self.tableView reloadData];
+//    [self.tableView reloadData];
+    [self loadData];
 
 }
 
@@ -164,6 +187,7 @@ NSString * const kYelpTokenSecret = @"zgeQURodtyrv7YzcKplgT5X-Yaw";
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [self searchBarCancelButtonClicked:self.searchBar];
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 
     // Here we would push the detail view controller
@@ -183,7 +207,7 @@ NSString * const kYelpTokenSecret = @"zgeQURodtyrv7YzcKplgT5X-Yaw";
     
     [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     
-    [self.client searchWithTerm:@"Thai" success:^(AFHTTPRequestOperation *operation, id response) {
+    [self.client searchWithTerm:self.search_term andFilters: self.filters success:^(AFHTTPRequestOperation *operation, id response) {
   //      NSLog(@"response: %@", response);
         self.businesses = response[@"businesses"];
         [self.tableView reloadData];
@@ -197,9 +221,42 @@ NSString * const kYelpTokenSecret = @"zgeQURodtyrv7YzcKplgT5X-Yaw";
 
 -(void)pushFilterButton {
     FilterViewController *fvc = [[FilterViewController alloc] init];
+    fvc.delegate=self;
     [self.navigationController pushViewController:fvc animated:YES];
 }
 
+- (void)addFilters:(FilterViewController *)controller didFinishEnteringFilters:(YelpFilters *)filters{
+    NSLog(@"This was returned from ViewControllerB %@", filters);
+    self.filters = filters;
+    [self.navigationController popViewControllerAnimated:YES];
+    [self loadData];
+}
 
+//- (IBAction)onViewTap:(id)sender {
+//    [self.view endEditing:YES];
+//    [self loadData];
+//}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    [searchBar resignFirstResponder];
+    searchBar.showsCancelButton = NO;
+
+}
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar
+{
+    searchBar.showsCancelButton = YES;
+    return YES;
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    [searchBar resignFirstResponder];
+    // You can write search code Here
+    searchBar.showsCancelButton = NO;
+    self.search_term = searchBar.text;
+    [self loadData];
+}
 
 @end

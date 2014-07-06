@@ -7,8 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "YelpFilters.h"
+
+@class FilterViewController;
+
+@protocol FilterViewControllerDelegate <NSObject>
+- (void)addFilters:(FilterViewController *)controller didFinishEnteringFilters:(YelpFilters *)filters;
+@end
 
 @interface FilterViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *filterTableView;
+
+@property (nonatomic,weak) id <FilterViewControllerDelegate> delegate;
 
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "YelpClient.h"
+#import "YelpFilters.h"
 
 @implementation YelpClient
 
@@ -20,7 +21,22 @@
     return self;
 }
 
-- (AFHTTPRequestOperation *)searchWithTerm:(NSString *)term success:(void (^)(AFHTTPRequestOperation *operation, id response))success failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
+//- (AFHTTPRequestOperation *)searchWithTerm:(NSString *)term success:(void (^)(AFHTTPRequestOperation *operation, id response))success failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
+    
+    // For additional parameters, see http://www.yelp.com/developers/documentation/v2/search_api
+//    NSDictionary *parameters = @{@"term": term,
+//                                 @"location" : @"Castro",
+//                                 @"cll" : @"37.759813,-122.441502",
+//                                 @"limit": [NSNumber numberWithInt:20],
+//
+//                                 //    @"offset" :
+//                                 };
+//
+//    return [self GET:@"search" parameters:parameters success:success failure:failure];
+//}
+
+- (AFHTTPRequestOperation *)searchWithTerm:(NSString *)term andFilters:(YelpFilters *)filters success:(void (^)(AFHTTPRequestOperation *operation, id response))success failure:(void (^)(AFHTTPRequestOperation *operation, NSError *error))failure {
+  
     
     // For additional parameters, see http://www.yelp.com/developers/documentation/v2/search_api
     NSDictionary *parameters = @{@"term": term,
@@ -30,6 +46,12 @@
                                  
                                  //    @"offset" :
                                  };
+    
+    if (filters != nil) {
+        
+        
+        // Do some filter stuff
+    }
     
     return [self GET:@"search" parameters:parameters success:success failure:failure];
 }
