@@ -21,20 +21,17 @@ Yelp app for iOS class (assignment 3)
    - Optional: Table rows should be dynamic height according to the content height
    - Optional: infinite scroll for restaurant results
    - Optional: Implement map view of restaurant results
-
 - Filter page.
    - Optional: implement a custom switch for on/off states
    - Optional: Implement the restaurant detail page.
 
 **UI Demo**
 
-<!---
-![demo gif](https://raw.githubusercontent.com/osabina/ios-yelp/master/rt_demo.gif)
--->
+![demo gif](https://raw.githubusercontent.com/osabina/ios-yelp/master/rt_demo.gif))
 
 **Notes**
 
-This took me about 15 hours.
+This took me ~15 hours, although I found myself making a lot of little things work that are not directly user stories (The search bar alone had lots of interesting side issues: removing "clear" button except on edit, making the "cancel" button appear and work properly, ending editing on view tap).  Very useful assignment.
 
 "Cancel" button just returns to search page, but filter choices remain (although they are not searched on).  In an ideal world changes made during that View would be tossed on cancel.  Ran out of time trying to figure that out.
 
