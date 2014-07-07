@@ -34,9 +34,6 @@ NSString * const kYelpTokenSecret = @"zgeQURodtyrv7YzcKplgT5X-Yaw";
 -(void)loadData;
 -(void)pushFilterButton;
 
-- (IBAction)editDidEnd:(id)sender;
-- (IBAction)onViewTap:(id)sender;
-
 @end
 
 @implementation MainViewController
@@ -48,7 +45,7 @@ NSString * const kYelpTokenSecret = @"zgeQURodtyrv7YzcKplgT5X-Yaw";
         // You can register for Yelp API keys here: http://www.yelp.com/developers/manage_api_keys
         self.client = [[YelpClient alloc] initWithConsumerKey:kYelpConsumerKey consumerSecret:kYelpConsumerSecret accessToken:kYelpToken accessSecret:kYelpTokenSecret];
         self.filters = nil;
-        self.search_term = @"Food";
+        self.search_term = @"Food";  // Initial search term that makes sense.
         //        [self loadData];
     }
     return self;
@@ -66,12 +63,6 @@ NSString * const kYelpTokenSecret = @"zgeQURodtyrv7YzcKplgT5X-Yaw";
     // static, for now
     self.tableView.rowHeight = 110;
     
-//    UISearchBar *searchBar = [[UISearchBar alloc]
-  //                            initWithFrame:CGRectMake(0, 0, 200, 30)];
-    //    searchBar.delegate = self;
-
-    //UIView *searchBarView = [[UIView alloc] initWithFrame:[searchBar bounds]];
-    //[searchBarView addSubview:searchBar];
     
     id barButtonAppearance = [UIBarButtonItem appearance];
     NSMutableDictionary *barButtonTextAttributes = [NSMutableDictionary dictionaryWithCapacity:1];
@@ -102,6 +93,9 @@ NSString * const kYelpTokenSecret = @"zgeQURodtyrv7YzcKplgT5X-Yaw";
     self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(1.0, 0.0, 280.0, 44.0)];
     self.searchBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.searchBar.barTintColor= UIColorFromRGB(0xb23512);
+    // Keep the little grey x (clear edit field) from showing unless we are editing)
+    UITextField *textField = [self.searchBar valueForKey:@"_searchField"];
+    textField.clearButtonMode = UITextFieldViewModeWhileEditing;
     
     UIView *searchBarView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, 300.0, 44.0)];
     searchBarView.autoresizingMask = 0;
@@ -123,17 +117,16 @@ NSString * const kYelpTokenSecret = @"zgeQURodtyrv7YzcKplgT5X-Yaw";
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-//    return self.businesses.count;
-    return 20;
+    return self.businesses.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"cell for row at index path: %d", indexPath.row);
+    //NSLog(@"cell for row at index path: %d", indexPath.row);
     YelpCell *cell = [tableView dequeueReusableCellWithIdentifier:@"YelpCell"];
    //NSLog(@"BU: %@", self.businesses);
 
     NSDictionary *business = self.businesses[indexPath.row];
-    NSLog(@"business: %@", business);
+    //NSLog(@"business: %@", business);
     
     // Name
     cell.placeLabel.text = [NSString stringWithFormat:@"%d. %@", (int) indexPath.row + 1,
@@ -149,9 +142,16 @@ NSString * const kYelpTokenSecret = @"zgeQURodtyrv7YzcKplgT5X-Yaw";
                               initWithDictionary: business[@"location"]];
 
     // NSLog(@"%@", location);
-    NSArray *displayAddress = [[NSArray alloc]
-                               initWithObjects: location[@"display_address"][0],
-                                location[@"display_address"][1], nil];
+    NSArray *address_components = location[@"display_address"];
+    NSArray *displayAddress;
+    if (address_components.count > 1) {
+        displayAddress = [[NSArray alloc]
+                           initWithObjects: address_components[0],
+                           address_components[1], nil];
+    } else {
+        displayAddress = [[NSArray alloc]
+                           initWithObjects: address_components[0], nil];
+    }
 
     NSString *address = [displayAddress componentsJoinedByString:@", "];
     //NSLog(@"%@", address);
@@ -226,7 +226,6 @@ NSString * const kYelpTokenSecret = @"zgeQURodtyrv7YzcKplgT5X-Yaw";
 }
 
 - (void)addFilters:(FilterViewController *)controller didFinishEnteringFilters:(YelpFilters *)filters{
-    NSLog(@"This was returned from ViewControllerB %@", filters);
     self.filters = filters;
     [self.navigationController popViewControllerAnimated:YES];
     [self loadData];
@@ -253,7 +252,6 @@ NSString * const kYelpTokenSecret = @"zgeQURodtyrv7YzcKplgT5X-Yaw";
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
     [searchBar resignFirstResponder];
-    // You can write search code Here
     searchBar.showsCancelButton = NO;
     self.search_term = searchBar.text;
     [self loadData];

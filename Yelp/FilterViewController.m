@@ -126,7 +126,7 @@
 {
     int section = indexPath.section;
     int row = indexPath.row;
-    NSLog(@"did select: section %d, row %d", section, row);
+    //NSLog(@"did select: section %d, row %d", section, row);
     
     NSDictionary *filter = self.yf.filters[section];
     NSMutableIndexSet *indexSet = [NSMutableIndexSet indexSetWithIndex: section];
@@ -142,10 +142,10 @@
             self.yf.filters[section][@"selected"] = [NSNumber numberWithInt:row];
         }
         [self.yf toggleSectionExpanded:section];
-        NSLog(@"toggleExpand");
+        //NSLog(@"toggleExpand");
     // Categories/Cuisine are a multi-select
     } else if ([filter[@"name"] isEqualToString:@"Categories"]) {
-        NSLog(@"row = %d, collapsed_size = %d", row, [filter[@"collapsed_size"] intValue]);
+        //NSLog(@"row = %d, collapsed_size = %d", row, [filter[@"collapsed_size"] intValue]);
         if (! [self.yf sectionExpanded:section] && row == ([filter[@"collapsed_size"] intValue] - 1 ) ) {
             NSLog(@"toggleExpand");
             [self.yf toggleSectionExpanded:section];

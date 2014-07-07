@@ -13,8 +13,9 @@ Yelp app for iOS class (assignment 3)
    - The filters table should be organized into sections as in the mock.
    - Radius filter should expand as in the real Yelp app
    - Categories should show a subset of the full list with a "See All" row to expand.
+   - Clicking on the "Search" button should dismiss the filters page and trigger the search w/ the new filter settings.
 
-**TODO User Stories**
+**Incomplete User Stories**
 
 - Search results page
    - Optional: Table rows should be dynamic height according to the content height
@@ -22,22 +23,20 @@ Yelp app for iOS class (assignment 3)
    - Optional: Implement map view of restaurant results
 
 - Filter page.
-   - Clicking on the "Search" button should dismiss the filters page and trigger the search w/ the new filter settings.
    - Optional: implement a custom switch for on/off states
    - Optional: Implement the restaurant detail page.
 
 **UI Demo**
 
-Coming soon.
 <!---
 ![demo gif](https://raw.githubusercontent.com/osabina/ios-yelp/master/rt_demo.gif)
 -->
 
 **Notes**
 
-This took me about 15 hours to get to this point.
+This took me about 15 hours.
 
-"Cancel" button just returns to search page, but filter choices remain (although they are not searched on).  In an ideal world changes made during that View would be tossed on cancel.
+"Cancel" button just returns to search page, but filter choices remain (although they are not searched on).  In an ideal world changes made during that View would be tossed on cancel.  Ran out of time trying to figure that out.
 
 **Credits**
 
