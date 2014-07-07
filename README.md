@@ -1,7 +1,7 @@
 ios-yelp
 ========
 
-Yelp app for iOS class (assignment 3)
+Yelp app for iOS class (Assignment #2)
 
 **Completed User Stories**
 
